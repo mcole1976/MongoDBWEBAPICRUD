@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="entry.js" ></script> 
+    <title>Update Data Form</title>
+</head>
+
+<body>
+    <h1>Update Data</h1>
+    <form id="updateForm"> 
+        <label for="meal">Meal:</label> <input type="text" id="meal" name="meal" required><br><br> 
+        <label for="calorie_Count">Calorie Count:</label> <input type="number" id="calorie_Count" name="calorie_Count" required><br><br> 
+        <!-- Hidden date field --> 
+         <input type="hidden" id="date" name="date"> 
+         <label for="meal_Description">Meal Description:</label> <textarea id="meal_Description" name="meal_Description"  required></textarea><br><br> 
+         <button type="submit">Submit</button> </form>
+    <script> 
+    
+    </script>
+</body>
+
+</html>

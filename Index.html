@@ -21,7 +21,9 @@
         </thead>
         <tbody id="data-table"> </tbody>
     </table>
-    <script> $(document).ready(function () { $.getJSON('/api/data', function (data) { var rows = ''; $.each(data, function (index, item) { rows += '<tr>'; rows += '<td>' + item.key + '</td>'; rows += '<td>' + item.value + '</td>'; rows += '</tr>'; }); $('#data-table').html(rows); }); }); </script>
+    <!-- <script> $(document).ready(function () 
+    { $.getJSON('/api/data', function (data) { var rows = ''; $.each(data, function (index, item) { rows += '<tr>'; rows += '<td>' + item.key + '</td>'; rows += '<td>' + item.value + '</td>'; rows += '</tr>'; }); $('#data-table').html(rows); }); }); 
+    </script> -->
 </body>
 
 </html>
