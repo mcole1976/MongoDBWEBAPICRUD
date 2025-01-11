@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="graph.css" />
+    <!-- <script src="graph.js" ></script>  -->
+    <title>Graph</title>
+</head>
+
+<body>
+    <h1>Graph Data</h1>
+    <div>
+        <div id="chart-container"> 
+            <canvas id="mealBarChart"></canvas> 
+        </div>
+        <script>
+            var dataObject = {}
+            var dates = new Set();
+            var dayCals = new Set();
+            var sums = {
+                'lunch': 0,
+                'evening': 0,
+                'snack': 0,
+                'breakfast': 0
+            };
+
+            console.log(sums);
+
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch('/api/data').then(response => response.json())
+                    .then(data => {
+                        dataObject = { fetchedData: data };
+                        //console.log(dataObject); 
+                        dataReady = true;
+                        processData();
+                        fnMakeCalCountSetsPerDay(dataObject, dayCals, dates)
+
+                        console.log(dates);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+
+            function processData() {
+                var x = {};
+                var s = 0;
+                var e = 0;
+                var b = 0;
+                var l = 0;
+                var d = new Date();
+
+                if (dataReady) {
+                    dataObject.fetchedData.forEach(item => {
+                        x = item;
+                        console.log(x.meal);
+                        console.log(x.date);
+
+                        d = new Date(x.date).toISOString().split('T')[0];
+                        dates.add(d);
+                        console.log(dates);
+                        if (x.meal == "Snack") {
+                            s = sums.snack;
+                            s = s + x.calorie_Count;
+                            sums.snack = s
+                            console.log(sums);
+
+                        }
+                        if (x.meal == "Breakfast") {
+                            b = sums.breakfast;
+                            b = b + x.calorie_Count;
+                            sums.breakfast = b
+                            console.log(sums);
+
+                        }
+                        if (x.meal == "Lunch") {
+                            l = sums.lunch;
+                            l = l + x.calorie_Count;
+                            sums.lunch = l
+                            console.log(sums);
+                        }
+                        if (x.meal == "Evening") {
+                            e = sums.evening;
+                            e = e + x.calorie_Count;
+                            sums.evening = e
+                            console.log(sums);
+                        }
+                    });
+                }
+                else {
+                    console.log("Data is not ready yet.");
+                }
+            }
+
+            function fnMakeCalCountSetsPerDay(dataObject, dayCals, days) {
+                let dayCalorieMap = new Map(); 
+                // Initialize map with dates and zero calorie counts 
+                for (let day of days) 
+                { dayCalorieMap.set(day, 0); 
+                    
+                }
+                dataObject.fetchedData.forEach(item => { 
+                    let itemDate = new Date(item.date).toISOString().split('T')[0]; 
+                    if (dayCalorieMap.has(itemDate)) 
+                    { 
+                        let currentCalories = dayCalorieMap.get(itemDate); 
+                        currentCalories += item.calorie_Count; 
+                        dayCalorieMap.set(itemDate, currentCalories); 
+                    } 
+                }); 
+                // Log the calorie counts for each day 
+                for (let [day, calories] of dayCalorieMap.entries()) 
+                { 
+                    console.log(`Date: ${day}, Total Calories: ${calories}`); 
+                }
+                renderMealBarChart(dayCalorieMap);
+            
+            }
+
+            function renderMealBarChart(dayCalorieMap) 
+            { 
+                const labels = Array.from(dayCalorieMap.keys()); 
+                const data = Array.from(dayCalorieMap.values()); 
+                const ctx = document.getElementById('mealBarChart').getContext('2d'); 
+                const mealBarChart = new Chart(ctx, 
+                    { type: 'bar', data: 
+                        { labels: labels, datasets: 
+                            [
+                                { label: 'Total Calories', data: data, backgroundColor: 'rgba(75, 192, 192, 0.2)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 
+
+                                }
+                            ] 
+                        }, 
+                        options: 
+                        { scales: 
+                            { y: { beginAtZero: true } 
+                        } 
+                    } 
+                }); 
+            }
+
+
+
+
+
+
+        </script>
+    </div>
+</body>
+
+</html>
