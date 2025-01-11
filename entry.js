@@ -18,7 +18,9 @@ $(document).ready(function() {
             headers: { 'Access-Control-Allow-Origin': '*' },
             data: JSON.stringify(formData),
             success: function(data) {
-                alert(data);
+                console.log(data);
+                clearForm();
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('Error:', errorThrown);
@@ -27,5 +29,16 @@ $(document).ready(function() {
         });
     });
 });
+function clearForm() { 
+    const form = document.getElementById('updateForm'); 
+    if (form) 
+    { 
+        form.reset(); 
+    } 
+    else 
+    { 
+        console.error("Form not found with ID:"); 
+    } 
+}
 
     
