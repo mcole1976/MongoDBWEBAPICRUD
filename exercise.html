@@ -9,20 +9,32 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" />
-    <script src="entry.js" ></script> 
+    <script src="exercise.js" ></script> 
     <title>Update Data Form</title>
 </head>
 
 <body>
-    <h1>Add Food Data</h1>
+    <h1>Update Data</h1>
     <form id="updateForm"> 
-        <label for="meal">Meal:</label> <input class="input-group-sm" type="text" id="meal" name="meal" required><br><br> 
-        <label for="calorie_Count">Calorie Count:</label> <input class="input-group-sm" type="number" id="calorie_Count" name="calorie_Count" required><br><br> 
+        <div class="form-group">
+            <label for="Exercise">Exercise:</label> 
+            <input class="form-control form-control-sm" type="text" id="Description" name="Description" required>
+        </div>
+        <div class="form-group">
+        <label for="calorie_Count">Calorie Count:</label> 
+        <input class="form-control form-control-sm" type="number" id="Calories" name="Calories" required> 
+        </div>
         <!-- Hidden date field --> 
          <input type="hidden" id="date" name="date"> 
-         <label for="meal_Description">Meal Description:</label> <textarea class="input-group-sm" id="meal_Description" name="meal_Description"  required></textarea><br><br> 
-         <button class="btn btn-primary" type="submit">Submit</button> </form>
+         <div class="form-group">
+            <label for="Time Taken">Time Taken:</label> 
+            <input class="form-control form-control-sm"  type="number" id="Time_taken" name="Time_taken"  required></input>
+        </div>
+    </br>
+            <button class="btn btn-primary" type="submit">Submit</button> 
+        </form>
     <script> 
     
     </script>
