@@ -28,12 +28,33 @@ $(document).ready(function() {
             }
         });
     });
+
+    $.getJSON('/api/oneday', function (data) 
+    
+        { 
+            var rows = ''; 
+            console.log(data);
+            $.each(data, function (index, item) 
+            { 
+                rows += '<tr>'; rows += '<td>' 
+                + item.meal + '</td>'; rows += '<td>' + 
+                item.meal_Description + '</td>' 
+                + '<td>' + item.calorie_Count 
+                + '</td>'; rows += '<td>' 
+                + moment(item.date).format("MM/DD/YYYY");+ '</td>'; rows += '</tr>'; }); 
+            $('#data-table').html(rows); 
+        }
+    );
+
+
+
 });
 function clearForm() { 
     const form = document.getElementById('updateForm'); 
     if (form) 
     { 
         form.reset(); 
+        location.reload();
     } 
     else 
     { 
@@ -41,4 +62,4 @@ function clearForm() {
     } 
 }
 
-    
+ 
