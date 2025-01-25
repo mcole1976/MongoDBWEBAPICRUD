@@ -2,7 +2,8 @@ $(document).ready(function() {
 
     $('#updateForm').on('submit', function(event) {
         event.preventDefault();
-
+        var button = document.getElementById('entryB');
+        button.disabled = true;
         const formData = {
             meal: $('#meal').val(),
             calorie_Count: $('#calorie_Count').val(),
@@ -10,7 +11,7 @@ $(document).ready(function() {
             date: new Date().toISOString() // Add current timestamp
             
         };
-        console.log(formData);
+
         $.ajax({
             url: 'http://localhost:3000/add-data',
             type: 'POST',
@@ -27,6 +28,12 @@ $(document).ready(function() {
 
             }
         });
+
+        setTimeout(function() {
+            //alert('Button Clicked!');
+            button.disabled = false;
+        }, 1000);
+        console.log(formData);
     });
 
     $.getJSON('/api/oneday', function (data) 
