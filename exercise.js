@@ -3,6 +3,9 @@ $(document).ready(function() {
     $('#updateForm').on('submit', function(event) {
         event.preventDefault();
 
+        var button = document.getElementById('exAddB');
+        button.disabled = true;
+
         const formData = {
             exercise_Name: $('#Description').val(),
             calorie_Count: $('#Calories').val(),
@@ -27,6 +30,13 @@ $(document).ready(function() {
 
             }
         });
+
+        setTimeout(function() {
+            //alert('Button Clicked!');
+            button.disabled = false;
+        }, 1000);
+
+
     });
 });
 function clearForm() { 
