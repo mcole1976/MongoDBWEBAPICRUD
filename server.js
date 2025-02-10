@@ -21,7 +21,7 @@ while (retries < maxRetries) { try { const response = await axios({ url: url, me
 // POST endpoint to add data 
 app.post('/add-data', async (req, res) => 
     { 
-        const newData = req.body; const url = 'https://localhost:44350/api/Logs'; 
+        const newData = req.body; const url = 'https://192.168.0.2:44350/api/Logs'; 
             try 
             { const response = await makeRequestWithRetry(url, 'POST', newData); 
                 console.log('Data added:', response); res.status(201).send('Data added successfully'); 
@@ -31,7 +31,7 @@ app.post('/add-data', async (req, res) =>
 
     app.post('/add-ex', async (req, res) => 
         { 
-            const newData = req.body; const url = 'https://localhost:44350/api/LogsB'; 
+            const newData = req.body; const url = 'https://192.168.0.2:44350/api/LogsB'; 
                 try 
                 { const response = await makeRequestWithRetry(url, 'POST', newData); 
                     console.log('Data added:', response); res.status(201).send('Data added successfully'); 
@@ -53,7 +53,7 @@ app.get('/api/oneday', async (req, res) =>
         { 
             const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
             // Ignore self-signed certificates 
-            const response = await axios.get('https://localhost:44350/api/GenData', { httpsAgent }); 
+            const response = await axios.get('https://192.168.0.2:44350/api/GenData', { httpsAgent }); 
             // Replace with your actual API endpoint 
             res.json(response.data); 
 
@@ -73,7 +73,7 @@ app.get('/api/data', async (req, res) =>
         { 
             const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
             // Ignore self-signed certificates 
-            const response = await axios.get('https://localhost:44350/api/LogsB', { httpsAgent }); 
+            const response = await axios.get('https://192.168.0.2:44350/api/LogsB', { httpsAgent }); 
             // Replace with your actual API endpoint 
             res.json(response.data); 
 
@@ -97,4 +97,4 @@ app.get('/exercise', (req, res) => { res.sendFile(path.join(__dirname, 'public',
 
 app.get('/graph', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'graph.html')); });
 
-app.listen(port, () => { console.log(`Server is running at http://localhost:${port}`); });
+app.listen(port, () => { console.log(`Server is running at http://192.168.0.2:${port}`); });
