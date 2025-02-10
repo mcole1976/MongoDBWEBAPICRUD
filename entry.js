@@ -12,28 +12,28 @@ $(document).ready(function() {
             
         };
 
-        $.ajax({
-            url: 'http://localhost:3000/add-data',
-            type: 'POST',
-            contentType: 'application/json',
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            data: JSON.stringify(formData),
-            success: function(data) {
-                console.log(data);
-                clearForm();
 
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error:', errorThrown);
-
+        fnMakeAjaxCall('http://192.168.0.2:3000/add-data', 'POST', formData)
+            .then (function(response) {
+                // This function will be called when the AJAX request is successful
+                clearForm(); // Clear the form only after the data has been successfully posted
+                button.disabled = false; // Re-enable the button
+            })
+            .catch( function(error) {
+                // This function will be called if the AJAX request fails
+                console.error('Error:', error);
+                button.disabled = false; // Re-enable the button even if the request fails
+            })
+            .finally(function() {
+                // This block runs regardless of success or failure
+                button.disabled = false; // Re-enable the button
             }
-        });
 
-        setTimeout(function() {
-            //alert('Button Clicked!');
-            button.disabled = false;
-        }, 1000);
-        console.log(formData);
+
+        );
+
+        
+        
     });
 
     $.getJSON('/api/oneday', function (data) 
@@ -68,5 +68,27 @@ function clearForm() {
         console.error("Form not found with ID:"); 
     } 
 }
+
+function fnMakeAjaxCall(url, method, data)
+{
+    return new Promise((resolve, reject) =>
+    {
+        $.ajax(
+            {
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    resolve(response); // Resolve the Promise with the response
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    reject(errorThrown); // Reject the Promise with the error
+                }
+
+            });
+    });
+}
+
 
  
