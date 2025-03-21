@@ -12,22 +12,40 @@ app.timeout = 300000;
 app.use(cors());
 // Serve static files from the "node_modules/bootstrap" directory 
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap')));
-
-const makeRequestWithRetry = 
-async (url, method, data = {}, maxRetries = 7) => 
-    { let retries = 0; const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
-// Ignore self-signed certificates 
-while (retries < maxRetries) { try { const response = await axios({ url: url, method: method, data: data, httpsAgent: httpsAgent }); return response.data; } catch (error) { if (error.code === 'ECONNRESET' || error.response?.status === 500) { console.log(`Retry attempt ${retries + 1} due to ${error.code || '500 Internal Server Error'}`); retries++; continue; } throw error; } } throw new Error(`Failed to complete request after ${maxRetries} retries.`); }; 
-// POST endpoint to add data 
-app.post('/add-data', async (req, res) => 
-    { 
-        const newData = req.body; const url = 'https://192.168.0.2:44350/api/Logs'; 
-            try 
-            { const response = await makeRequestWithRetry(url, 'POST', newData); 
-                console.log('Data added:', response); res.status(201).send('Data added successfully'); 
+    // Server Code
+    const makeRequestWithRetry = 
+    async (url, method, data = {}, maxRetries = 7) => 
+        { let retries = 0; const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+    // Ignore self-signed certificates 
+        while (retries < maxRetries) 
+            { 
+                try 
+                { 
+                    const response = await axios({ url: url, method: method, data: data, httpsAgent: httpsAgent }); 
+                    return response.data; 
+                } 
+                catch (error) 
+                { if (error.code === 'ECONNRESET' || error.response?.status === 500) 
+                    { 
+                        console.log(`Retry attempt ${retries + 1} due to ${error.code || '500 Internal Server Error'}`); 
+                        retries++; 
+                        continue; 
+                    } 
+                    throw error; 
+                } 
             } 
-            catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
-    });
+            throw new Error(`Failed to complete request after ${maxRetries} retries.`); 
+        }; 
+    // POST endpoint to add data 
+    app.post('/add-data', async (req, res) => 
+        { 
+            const newData = req.body; const url = 'https://192.168.0.2:44350/api/Logs'; 
+                try 
+                { const response = await makeRequestWithRetry(url, 'POST', newData); 
+                    console.log('Data added:', response); res.status(201).send('Data added successfully'); 
+                } 
+                catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
+        });
 
     app.post('/add-ex', async (req, res) => 
         { 
@@ -47,49 +65,111 @@ app.post('/add-data', async (req, res) =>
 // console.log('Data updated:', response.data); res.send('Data updated successfully'); } catch (error) { console.error('Error updating data:', error); res.status(500).send('Internal Server Error');
 // } });
 
-app.get('/api/oneday', async (req, res) => 
-    { 
-        try 
+    app.get('/api/oneday', async (req, res) => 
         { 
-            const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
-            // Ignore self-signed certificates 
-            const response = await axios.get('https://192.168.0.2:44350/api/GenData', { httpsAgent }); 
-            // Replace with your actual API endpoint 
-            res.json(response.data); 
+            try 
+            { 
+                const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+                // Ignore self-signed certificates 
+                const response = await axios.get('https://192.168.0.2:44350/api/GenData', { httpsAgent }); 
+                // Replace with your actual API endpoint 
+                res.json(response.data); 
 
-        } 
-        catch (error) 
+            } 
+            catch (error) 
+            { 
+                console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
+            }
+            
+        }); 
+        //grid for update food
+        app.get('/api/getfooddetails', async (req, res) => 
+            {
+                try 
+                { 
+                    const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+                    // Ignore self-signed certificates 
+                    const response = await axios.get('https://192.168.0.2:44350/api/food', { httpsAgent }); 
+                    // Replace with your actual API endpoint 
+                    res.json(response.data); 
+
+                } 
+                catch (error) 
+                { 
+                    console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
+                }
+            });
+
+    //grid for update exercise
+    app.get('/api/getexercisedetails', async (req, res) => 
+        {
+            try 
+            { 
+                const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+                // Ignore self-signed certificates 
+                const response = await axios.get('https://192.168.0.2:44350/api/exercise', { httpsAgent }); 
+                // Replace with your actual API endpoint 
+                res.json(response.data); 
+    
+            } 
+            catch (error) 
+            { 
+                console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
+             }
+        });
+
+
+
+     // Food Update   
+    app.post('/api/updateF', async (req, res) => 
         { 
-            console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
-         }
-        
-    }); 
+             const newData = req.body; const url = 'https://192.168.0.2:44350/api/Food/Update'; 
+            try 
+            { const response = await makeRequestWithRetry(url, 'POST', newData); 
+                console.log('Data added:', response); res.status(201).send('Data added successfully'); 
+            } 
+            catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
 
+        });
 
-
-app.get('/api/data', async (req, res) => 
-    { 
-        try 
+    // Exercise Update
+    app.post('/api/updateE', async (req, res) => 
         { 
-            const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
-            // Ignore self-signed certificates 
-            const response = await axios.get('https://192.168.0.2:44350/api/LogsB', { httpsAgent }); 
-            // Replace with your actual API endpoint 
-            res.json(response.data); 
+                const newData = req.body; const url = 'https://192.168.0.2:44350/api/Exercise/Update'; 
+            try 
+            { const response = await makeRequestWithRetry(url, 'POST', newData); 
+                console.log('Data added:', response); res.status(201).send('Data added successfully'); 
+            } 
+            catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
 
-        } 
-        catch (error) 
+        });
+
+
+
+
+    app.get('/api/data', async (req, res) => 
         { 
-            console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
-         }
-        
-    }); 
+            try 
+            { 
+                const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+                // Ignore self-signed certificates 
+                const response = await axios.get('https://192.168.0.2:44350/api/LogsB', { httpsAgent }); 
+                // Replace with your actual API endpoint 
+                res.json(response.data); 
+
+            } 
+            catch (error) 
+            { 
+                console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
+            }
+            
+        }); 
 
 
 // Serve the entry HTML file 
 app.get('/entry', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'entry.html')); });
 
-
+app.get('/FoodUpdate', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'FoodUpdate.html')); })
 
 app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); }); 
 
