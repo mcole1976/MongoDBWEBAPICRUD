@@ -1,0 +1,31 @@
+const axios = require('axios');
+const https = require('https');
+const { makeRequestWithRetry } = require('../utils/requestUtils');
+
+const exerciseController = {
+    getExerciseDetails: async (req, res) => {
+        try {
+            const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+            const response = await axios.get('https://192.168.0.2:44350/api/exercise', { httpsAgent });
+            res.json(response.data);
+        } catch (error) {
+            console.error('Error fetching exercise details:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    },
+
+    updateExercise: async (req, res) => {
+        const newData = req.body;
+        const url = 'https://192.168.0.2:44350/api/Exercise/Update';
+        try {
+            const response = await makeRequestWithRetry(url, 'POST', newData);
+            console.log('Exercise updated:', response);
+            res.status(201).send('Exercise updated successfully');
+        } catch (error) {
+            console.error('Error updating exercise:', error);
+            res.status(500).json({ error: error.message });
+        }
+    },
+};
+
+module.exports = exerciseController;
