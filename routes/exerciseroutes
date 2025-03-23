@@ -1,0 +1,9 @@
+const express = require('express');
+const exerciseController = require('../controllers/exerciseController');
+
+const router = express.Router();
+
+router.get('/api/getexercisedetails', exerciseController.getExerciseDetails);
+router.post('/api/updateE', exerciseController.updateExercise);
+
+module.exports = router;
