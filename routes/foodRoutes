@@ -1,0 +1,9 @@
+const express = require('express');
+const foodController = require('../controllers/foodController');
+
+const router = express.Router();
+
+router.get('/api/getfooddetails', foodController.getFoodDetails);
+router.post('/api/updateF', foodController.updateFood);
+
+module.exports = router;
