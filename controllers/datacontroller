@@ -1,0 +1,55 @@
+const axios = require('axios');
+const https = require('https');
+const { makeRequestWithRetry } = require('../utils/requestUtils');
+
+const dataController = {
+    addData: async (req, res) => {
+        const newData = req.body;
+        const url = 'https://192.168.0.2:44350/api/Logs';
+        try {
+            const response = await makeRequestWithRetry(url, 'POST', newData);
+            console.log('Data added:', response);
+            res.status(201).send('Data added successfully');
+        } catch (error) {
+            console.error('Error adding data:', error);
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    addExerciseData: async (req, res) => {
+        const newData = req.body;
+        const url = 'https://192.168.0.2:44350/api/LogsB';
+        try {
+            const response = await makeRequestWithRetry(url, 'POST', newData);
+            console.log('Exercise data added:', response);
+            res.status(201).send('Exercise data added successfully');
+        } catch (error) {
+            console.error('Error adding exercise data:', error);
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    getOneDayData: async (req, res) => {
+        try {
+            const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+            const response = await axios.get('https://192.168.0.2:44350/api/GenData', { httpsAgent });
+            res.json(response.data);
+        } catch (error) {
+            console.error('Error fetching one-day data:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    },
+
+    getAllData: async (req, res) => {
+        try {
+            const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+            const response = await axios.get('https://192.168.0.2:44350/api/LogsB', { httpsAgent });
+            res.json(response.data);
+        } catch (error) {
+            console.error('Error fetching all data:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    },
+};
+
+module.exports = dataController;
