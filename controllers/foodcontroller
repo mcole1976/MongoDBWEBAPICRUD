@@ -1,0 +1,31 @@
+const axios = require('axios');
+const https = require('https');
+const { makeRequestWithRetry } = require('../utils/requestUtils');
+
+const foodController = {
+    getFoodDetails: async (req, res) => {
+        try {
+            const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+            const response = await axios.get('https://192.168.0.2:44350/api/food', { httpsAgent });
+            res.json(response.data);
+        } catch (error) {
+            console.error('Error fetching food details:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    },
+
+    updateFood: async (req, res) => {
+        const newData = req.body;
+        const url = 'https://192.168.0.2:44350/api/Food/Update';
+        try {
+            const response = await makeRequestWithRetry(url, 'POST', newData);
+            console.log('Food updated:', response);
+            res.status(201).send('Food updated successfully');
+        } catch (error) {
+            console.error('Error updating food:', error);
+            res.status(500).json({ error: error.message });
+        }
+    },
+};
+
+module.exports = foodController;
