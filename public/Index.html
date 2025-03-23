@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Data Table</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="AjaxUtility.js" ></script> 
+    <script src="main.js" ></script> 
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="entry.Html">Entry</a>
+        <a class="navbar-brand" href="graph.Html">Graph</a>
+        <a class="navbar-brand" href="exercise.Html">Exercise</a>
+        <a class="navbar-brand" href="foodupdate.Html">Food Update</a>
+        <a class="navbar-brand" href="exerciseupdate.Html">Food Update</a>
+    </nav>
+    <h1>Data Table</h1>
+    <table class="table table-striped table-light">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Meal</th>
+                <th scope="col">Meal Description</th>
+                <th scope="col">Calorie Count</th>
+                <th scope="col">Date and Time</th>
+            </tr>
+        </thead>
+        <tbody id="data-table"> </tbody>
+    </table>
+</body>
+
+</html>

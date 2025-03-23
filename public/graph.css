@@ -1,0 +1,27 @@
+body { 
+    display: inline-block; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 76vh; 
+    margin: 0; 
+    font-family: Arial, sans-serif; 
+    background-color: #f4f4f9; 
+} 
+
+canvas { 
+    height: 50vh; 
+    display: flex; 
+    width: 90w; 
+    margin: 0 auto; 
+    justify-content: center; 
+    height: 90vh; } 
+chart-container 
+{ 
+    height: 45vh; 
+    width: 75vw; 
+    max-width: 95vw; 
+    margin: 0 auto; 
+    background: #fff; 
+    padding: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 10px; 
+}
