@@ -1,0 +1,11 @@
+const express = require('express');
+const dataController = require('../controllers/dataController');
+
+const router = express.Router();
+
+router.post('/add-data', dataController.addData);
+router.post('/add-ex', dataController.addExerciseData);
+router.get('/api/oneday', dataController.getOneDayData);
+router.get('/api/data', dataController.getAllData);
+
+module.exports = router;
