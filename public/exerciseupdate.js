@@ -1,60 +1,69 @@
-$(document).ready(function() {
 
-    fetchAndRenderFoodDetails('/api/getexercisedetails')
-    .then(data => {
-        console.log('Data fetched and rendered successfully!', data);
-    })
-    .catch(error => {
-        console.error('Failed to fetch or render data:', error);
-    });
 
+    // fetchAndRenderFoodDetails('/api/getexercisedetails', logapi)
+    // .then(data => {
+    //     console.log('Data fetched and rendered successfully!', data);
+    // })
+    // .catch(error => {
+    //     console.error('Failed to fetch or render data:', error);
+    // });
+
+    const getToken = async  ()  => {
+        try {
+            const token = await AjaxUtility.logapi('https://localhost:44377/api/access/token');
+            console.log('Token received by getToken:', token); // Debug
+            return token;
+          } catch (error) {
+            console.error('Error in getToken:', error);
+            throw error;
+          }
+        
+      };
+      
+      // Usage
+      getToken()
+  .then(token => {
+    console.log('Token passed to fetchAndRenderFoodDetails:', token);
+    return fetchAndRenderExerciseDetails('/api/getexercisedetails', token);
+  })
+  .then(foodData => console.log('Rendered data:', foodData))
+  .catch(error => console.error('Error:', error));
+
+
+
+  const fetchAndRenderExerciseDetails = async (url, token) => {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
   
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      let rows ='';
+      data.forEach(item => {
+        rows += `<tr data-id="${item.id}">
+          <td><input type="text" value="${item.exercise_Name}" class="editable description"></td>
+          <td><input type="text" value="${item.calorieCount}" class="editable calories"></td>
+          <td><input type="text" value="${item.exercise_Time}" class="editable time"></td>
+          <td><input type="text" value="${new Date(item.date).toISOString().split('T')[0]}" class="editable date"></td>
+          <td><button class="save-btn">Save</button></td>
+        </tr>`;
+        document.getElementById('data-table').innerHTML = rows;
 
-
-
-});
-
-
-function fetchAndRenderFoodDetails(url) {
-    return new Promise((resolve, reject) => {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                //console.log(data);
-                let rows = '';
-                data.forEach(item => {
-                    rows += `<tr data-id="${item.id}">
-                        <td><input type="text" value="${item.exercise_Name}" class="editable description"></td>
-                        <td><input type="text" value="${item.calorieCount}" class="editable calories"></td>
-                        <td><input type="text" value="${item.exercise_Time}" class="editable time"></td>
-                        <td><input type="text" value="${new Date(item.date).toISOString().split('T')[0]}" class="editable date"></td>
-                        <td><button class="save-btn">Save</button></td>
-                    </tr>`;
-                });
-                document.getElementById('data-table').innerHTML = rows;
-
-                 // Add event listeners to all save buttons
-                 const saveButtons = document.querySelectorAll('.save-btn');
-                 saveButtons.forEach(button => {
-                     button.addEventListener('click', handleSave);
-                 });
-
-
-                resolve(data); // Resolve the promise with the fetched data
-            })
-            .catch(error => {
-                console.error('Error fetching or rendering data:', error);
-                reject(error); // Reject the promise if there's an error
-            });
-    });
-
-
-}
+        return data;
+      });
+    } catch (error) {
+      console.error('Error in Exercise Call Details:', error);
+      throw error;
+    }
+  };
 
 function handleSave(event) {
     const row = event.target.closest('tr'); // Get the closest row
@@ -114,3 +123,29 @@ function handleSave(event) {
         });
     }
 }
+function logapi()
+{
+
+    AjaxUtility.getJSON('https://localhost:44377/api/access/token')
+                .then (function(response) {
+                    // This function will be called when the AJAX request is successful
+                    //clearForm(); // Clear the form only after the data has been successfully posted
+                    //submitButton.disabled = false; // Re-enable the button
+                    console.log(response.token);
+                    return response.token;
+                })
+                .catch( function(error) {
+                    // This function will be called if the AJAX request fails
+                    console.error('Error:', error);
+                    //submitButton.disabled = false; // Re-enable the button even if the request fails
+                })
+                .finally(function() {
+                    // This block runs regardless of success or failure
+                    //submitButton.disabled = false; // Re-enable the button
+                    console.error('Finally: Complete');
+                }
+
+
+            );
+}
+ 
