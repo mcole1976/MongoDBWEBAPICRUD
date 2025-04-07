@@ -4,7 +4,22 @@ const https = require('https');
 const path = require('path'); 
 const cors = require('cors');
 const app = express(); 
-const port = 3000; 
+require('dotenv').config({ path: './e.env' });
+const dataRoutes = require('./routes/dataRoutes');
+
+
+
+
+const API_BASE_URL = process.env.API_BASE_URL;
+const port = process.env.PORT || 3000; // Fallback to 3000 if not set
+console.log(port);
+
+console.log(`API Base URL: ${API_BASE_URL}`);
+console.log(`Server running on port: ${port}`);
+
+
+
+
 app.use(express.json());
 app.use(express.static('public')); 
 app.timeout = 300000;
@@ -12,6 +27,9 @@ app.timeout = 300000;
 app.use(cors());
 // Serve static files from the "node_modules/bootstrap" directory 
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap')));
+
+
+app.use('/', dataRoutes); 
     // Server Code
     const makeRequestWithRetry = 
     async (url, method, data = {}, maxRetries = 7) => 
@@ -37,25 +55,25 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
             throw new Error(`Failed to complete request after ${maxRetries} retries.`); 
         }; 
     // POST endpoint to add data 
-    app.post('/add-data', async (req, res) => 
-        { 
-            const newData = req.body; const url = 'https://192.168.0.2:44350/api/Logs'; 
-                try 
-                { const response = await makeRequestWithRetry(url, 'POST', newData); 
-                    console.log('Data added:', response); res.status(201).send('Data added successfully'); 
-                } 
-                catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
-        });
+    // app.post('/add-data', async (req, res) => 
+    //     { 
+    //         const newData = req.body; const url = 'https://192.168.0.166:44305/api/Logs'; 
+    //             try 
+    //             { const response = await makeRequestWithRetry(url, 'POST', newData); 
+    //                 console.log('Data added:', response); res.status(201).send('Data added successfully'); 
+    //             } 
+    //             catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
+    //     });
 
-    app.post('/add-ex', async (req, res) => 
-        { 
-            const newData = req.body; const url = 'https://192.168.0.2:44350/api/LogsB'; 
-                try 
-                { const response = await makeRequestWithRetry(url, 'POST', newData); 
-                    console.log('Data added:', response); res.status(201).send('Data added successfully'); 
-                } 
-                catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
-        });
+    // app.post('/add-ex', async (req, res) => 
+    //     { 
+    //         const newData = req.body; const url = 'https://192.168.0.166:44305/api/LogsB'; 
+    //             try 
+    //             { const response = await makeRequestWithRetry(url, 'POST', newData); 
+    //                 console.log('Data added:', response); res.status(201).send('Data added successfully'); 
+    //             } 
+    //             catch (error) { console.error('Error adding data:', error); res.status(500).json({ error: error.message }); } 
+    //     });
 
 // PUT endpoint to update data 
 // app.put('/update-data', async (req, res) => { const updateData = req.body; try { const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
@@ -65,23 +83,23 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
 // console.log('Data updated:', response.data); res.send('Data updated successfully'); } catch (error) { console.error('Error updating data:', error); res.status(500).send('Internal Server Error');
 // } });
 
-    app.get('/api/oneday', async (req, res) => 
-        { 
-            try 
-            { 
-                const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
-                // Ignore self-signed certificates 
-                const response = await axios.get('https://192.168.0.2:44350/api/GenData', { httpsAgent }); 
-                // Replace with your actual API endpoint 
-                res.json(response.data); 
+    // app.get('/api/oneday', async (req, res) => 
+    //     { 
+    //         try 
+    //         { 
+    //             const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+    //             // Ignore self-signed certificates 
+    //             const response = await axios.get('https://192.168.0.166:44305/api/GenData', { httpsAgent }); 
+    //             // Replace with your actual API endpoint 
+    //             res.json(response.data); 
 
-            } 
-            catch (error) 
-            { 
-                console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
-            }
+    //         } 
+    //         catch (error) 
+    //         { 
+    //             console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
+    //         }
             
-        }); 
+    //     }); 
         //grid for update food
         app.get('/api/getfooddetails', async (req, res) => 
             {
@@ -89,7 +107,7 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
                 { 
                     const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
                     // Ignore self-signed certificates 
-                    const response = await axios.get('https://192.168.0.2:44350/api/food', { httpsAgent }); 
+                    const response = await axios.get('https://192.168.0.166:44305/api/food', { httpsAgent }); 
                     // Replace with your actual API endpoint 
                     res.json(response.data); 
 
@@ -107,7 +125,17 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
             { 
                 const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
                 // Ignore self-signed certificates 
-                const response = await axios.get('https://192.168.0.2:44350/api/exercise', { httpsAgent }); 
+                //const response = await axios.get('https://192.168.0.166:44305/api/exercise', { httpsAgent }); 
+                const token = req.headers.authorization;
+                console.log(token);
+                const response = await axios.get('https://localhost:44377/api/Exercise', {
+                    httpsAgent, // Use the httpsAgent
+                    headers: {
+                        Authorization: token, // Pass the token to the API
+                    },
+                });
+        
+
                 // Replace with your actual API endpoint 
                 res.json(response.data); 
     
@@ -123,7 +151,7 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
      // Food Update   
     app.post('/api/updateF', async (req, res) => 
         { 
-             const newData = req.body; const url = 'https://192.168.0.2:44350/api/Food/Update'; 
+             const newData = req.body; const url = 'https://192.168.0.166:44305/api/Food/Update'; 
             try 
             { const response = await makeRequestWithRetry(url, 'POST', newData); 
                 console.log('Data added:', response); res.status(201).send('Data added successfully'); 
@@ -135,7 +163,7 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
     // Exercise Update
     app.post('/api/updateE', async (req, res) => 
         { 
-                const newData = req.body; const url = 'https://192.168.0.2:44350/api/Exercise/Update'; 
+                const newData = req.body; const url = 'https://192.168.0.166:44305/api/Exercise/Update'; 
             try 
             { const response = await makeRequestWithRetry(url, 'POST', newData); 
                 console.log('Data added:', response); res.status(201).send('Data added successfully'); 
@@ -147,23 +175,23 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
 
 
 
-    app.get('/api/data', async (req, res) => 
-        { 
-            try 
-            { 
-                const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
-                // Ignore self-signed certificates 
-                const response = await axios.get('https://192.168.0.2:44350/api/LogsB', { httpsAgent }); 
-                // Replace with your actual API endpoint 
-                res.json(response.data); 
+    // app.get('/api/data', async (req, res) => 
+    //     { 
+    //         try 
+    //         { 
+    //             const httpsAgent = new https.Agent({ rejectUnauthorized: false }); 
+    //             // Ignore self-signed certificates 
+    //             const response = await axios.get('https://192.168.0.166:44305/api/LogsB', { httpsAgent }); 
+    //             // Replace with your actual API endpoint 
+    //             res.json(response.data); 
 
-            } 
-            catch (error) 
-            { 
-                console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
-            }
+    //         } 
+    //         catch (error) 
+    //         { 
+    //             console.error('Error fetching data:', error); res.status(500).send('Internal Server Error');
+    //         }
             
-        }); 
+    //     }); 
 
 
 // Serve the entry HTML file 
@@ -177,4 +205,4 @@ app.get('/exercise', (req, res) => { res.sendFile(path.join(__dirname, 'public',
 
 app.get('/graph', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'graph.html')); });
 
-app.listen(port, () => { console.log(`Server is running at http://192.168.0.2:${port}`); });
+app.listen(port, () => { console.log(`Server is running at http://192.168.0.166:${port}`); });
