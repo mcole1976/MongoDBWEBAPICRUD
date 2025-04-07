@@ -1,24 +1,28 @@
-const axios = require('axios');
+    const axios = require('axios');
 const https = require('https');
 const { makeRequestWithRetry } = require('../utils/requestUtils');
+const aurl = `${process.env.API_BASE_URL}/api/Logs`;
+console.log('controller');
+console.log(aurl);
+const addData = async (req, res) => {
+    const newData = req.body;
+    const url = `${process.env.API_BASE_URL}/api/Logs`; // Use environment variable
+    console.log(url);
+    try {
+      const response = await makeRequestWithRetry(url, 'POST', newData);
+      console.log('Data added:', response);
+      res.status(201).send('Data added successfully');
+    } catch (error) {
+      console.error('Error adding data:', error);
+      res.status(500).json({ error: error.message });
+    }
+  };
 
-const dataController = {
-    addData: async (req, res) => {
-        const newData = req.body;
-        const url = 'https://192.168.0.2:44350/api/Logs';
-        try {
-            const response = await makeRequestWithRetry(url, 'POST', newData);
-            console.log('Data added:', response);
-            res.status(201).send('Data added successfully');
-        } catch (error) {
-            console.error('Error adding data:', error);
-            res.status(500).json({ error: error.message });
-        }
-    },
+ 
 
-    addExerciseData: async (req, res) => {
+ const   addExerciseData = async (req, res) => {
         const newData = req.body;
-        const url = 'https://192.168.0.2:44350/api/LogsB';
+        const url = 'https://192.168.0.166:44305/api/LogsB';
         try {
             const response = await makeRequestWithRetry(url, 'POST', newData);
             console.log('Exercise data added:', response);
@@ -27,29 +31,43 @@ const dataController = {
             console.error('Error adding exercise data:', error);
             res.status(500).json({ error: error.message });
         }
-    },
+    };
 
-    getOneDayData: async (req, res) => {
+    const getOneDayData = async (req, res) => {
         try {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-            const response = await axios.get('https://192.168.0.2:44350/api/GenData', { httpsAgent });
+
+            const token = req.headers.authorization;
+            console.log(token);
+            console.log('mcsc');
+            const response = await axios.get('https://192.168.0.166:44305/api/GenData', { 
+              httpsAgent,
+              headers: {
+                Authorization: token, // Pass the token to the API
+                },
+             });
             res.json(response.data);
         } catch (error) {
             console.error('Error fetching one-day data:', error);
             res.status(500).send('Internal Server Error');
         }
-    },
+    };
 
-    getAllData: async (req, res) => {
+   const  getAllData = async (req, res) => {
         try {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-            const response = await axios.get('https://192.168.0.2:44350/api/LogsB', { httpsAgent });
+            const response = await axios.get('https://192.168.0.166:44305/api/LogsB', { httpsAgent });
             res.json(response.data);
         } catch (error) {
             console.error('Error fetching all data:', error);
             res.status(500).send('Internal Server Error');
         }
-    },
-};
+    };
 
-module.exports = dataController;
+
+module.exports = {addData,
+    addExerciseData,
+    getOneDayData,
+    getAllData
+
+};
